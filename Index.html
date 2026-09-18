@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<title>SiagaBencana — Panduan Darurat</title>
+
+<style>
+:root{
+  --bg:#f3f4f6;
+  --card:#fff;
+  --text:#111827;
+  --muted:#6b7280;
+  --accent:#dc2626;
+  --accent2:#991b1b;
+  --line:#e5e7eb;
+  --safe:#166534;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+header{
+  background:#111827;
+  color:white;
+  padding:22px 18px 28px;
+  border-radius:0 0 24px 24px;
+}
+
+header h1{
+  margin:0;
+  font-size:27px;
+}
+
+header p{
+  margin:6px 0 0;
+  color:#d1d5db;
+}
+
+main{
+  max-width:900px;
+  margin:auto;
+  padding:16px;
+}
+
+.hero{
+  margin-top:-12px;
+}
+
+button,.chip{
+  border:0;
+  border-radius:14px;
+  padding:13px 15px;
+  font:inherit;
+  cursor:pointer;
+}
+
+.emergency{
+  width:100%;
+  background:var(--accent);
+  color:white;
+  font-weight:800;
+  font-size:18px;
+  box-shadow:0 6px 18px #0002;
+}
+
+.search{
+  margin:15px 0;
+  display:flex;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:15px;
+  overflow:hidden;
+}
+
+.search input{
+  flex:1;
+  border:0;
+  outline:0;
+  padding:15px;
+  font-size:16px;
+  background:transparent;
+}
+
+.search button{
+  background:transparent;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:10px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 2px 8px #0000000a;
+}
+
+.disaster{
+  cursor:pointer;
+  transition:.15s;
+}
+
+.disaster:active{
+  transform:scale(.98);
+}
+
+.icon{
+  font-size:30px;
+}
+
+.disaster b{
+  display:block;
+  margin-top:7px;
+}
+
+section{
+  margin-top:22px;
+}
+
+h2{
+  font-size:19px;
+  margin:0 0 10px;
+}
+
+.muted{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+}
+
+.action{
+  background:var(--card);
+  border:1px solid var(--line);
+  text-align:left;
+}
+
+.action b{
+  display:block;
+  margin-bottom:4px;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0009;
+  display:none;
+  align-items:flex-end;
+  z-index:5;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.sheet{
+  background:var(--card);
+  width:100%;
+  max-width:900px;
+  margin:auto;
+  max-height:92vh;
+  overflow:auto;
+  border-radius:24px 24px 0 0;
+  padding:20px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+}
+
+.close{
+  background:#e5e7eb;
+}
+
+.step{
+  padding:14px;
+  margin:8px 0;
+  border-left:5px solid var(--accent);
+  background:#f9fafb;
+  border-radius:10px;
+}
+
+.warning{
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  padding:13px;
+  border-radius:13px;
+  margin:12px 0;
+}
+
+.good{
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;
+  padding:13px;
+  border-radius:13px;
+  margin:12px 0;
+}
+
+ul{
+  padding-left:22px;
+  line-height:1.6;
+}
+
+.check label{
+  display:block;
+  padding:10px 0;
+  border-bottom:1px solid var(--line);
+}
+
+footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  padding:30px 10px;
+}
+
+.hidden{
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🛡️ SiagaBencana</h1>
+  <p>Panduan tindakan sebelum, saat, dan setelah keadaan darurat.</p>
+</header>
+
+<main>
+
+  <div class="hero">
+    <button class="emergency" onclick="openEmergency()">
+      🚨 MODE DARURAT
+    </button>
+  </div>
+
+  <div class="search">
+    <input
+      id="search"
+      placeholder="Cari: gempa, banjir, kebakaran..."
+      oninput="searchDisaster()"
+    >
+
+    <button onclick="document.getElementById('search').focus()">
+      🔎
+    </button>
+  </div>
+
+  <section>
+    <h2>Pilih situasi</h2>
+    <div id="grid" class="grid"></div>
+  </section>
+
+  <section>
+    <h2>Persiapan</h2>
+
+    <div class="actions">
+
+      <button class="action" onclick="openChecklist()">
+        <b>🎒 Kit darurat</b>
+        <span class="muted">
+          Checklist perlengkapan penting
+        </span>
+      </button>
+
+      <button class="action" onclick="familyPlan()">
+        <b>👨‍👩‍👧 Rencana keluarga</b>
+        <span class="muted">
+          Tentukan kontak dan titik kumpul
+        </span>
+      </button>
+
+      <button class="action" onclick="generalHelp()">
+        <b>🧭 Prinsip keselamatan</b>
+        <span class="muted">
+          Panduan umum ketika informasi terbatas
+        </span>
+      </button>
+
+      <button class="action" onclick="official()">
+        <b>📢 Sumber resmi</b>
+        <span class="muted">
+          Cek informasi terbaru dari lembaga terkait
+        </span>
+      </button>
+
+    </div>
+  </section>
+
+  <section>
+
+    <div class="card">
+
+      <b>Mode offline</b>
+
+      <p class="muted">
+        Panduan inti tersimpan di aplikasi ini dan tidak membutuhkan
+        internet. Peringatan real-time tetap harus diperiksa melalui
+        sumber resmi ketika koneksi tersedia.
+      </p>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  SiagaBencana • Informasi keselamatan umum.
+  Ikuti instruksi petugas dan peringatan resmi setempat.
+</footer>
+
+
+<div
+  id="modal"
+  class="modal"
+  onclick="if(event.target===this)closeModal()"
+>
+
+  <div
+    class="sheet"
+    id="sheet"
+  ></div>
+
+</div>
+
+
+<script>
+
+const data = [
+
+[
+"🌍",
+"Gempa bumi",
+[
+"Saat gempa: lindungi kepala dan leher, berlindung di bawah meja kokoh bila tersedia, dan menjauh dari kaca/benda yang dapat jatuh.",
+"Setelah guncangan berhenti, periksa bahaya sekitar, keluar bila bangunan tidak aman, dan ikuti informasi resmi.",
+"Jangan menggunakan lift. Waspadai gempa susulan."
+]
+],
+
+[
+"🌊",
+"Tsunami",
+[
+"Jika merasakan gempa kuat/lama atau menerima peringatan tsunami, segera bergerak menjauh dari pantai menuju tempat lebih tinggi atau lokasi evakuasi resmi.",
+"Jangan menunggu air terlihat. Ikuti rute dan arahan petugas.",
+"Jangan kembali ke pantai sampai dinyatakan aman oleh pihak berwenang."
+]
+],
+
+[
+"🌋",
+"Letusan gunung api",
+[
+"Ikuti status dan perintah evakuasi resmi. Siapkan masker/penutup hidung dan perlindungan mata dari abu.",
+"Jika terjadi hujan abu, kurangi aktivitas di luar dan lindungi sumber air/makanan dari abu.",
+"Jangan memasuki zona bahaya yang ditetapkan petugas."
+]
+],
+
+[
+"🌧️",
+"Banjir",
+[
+"Matikan listrik hanya jika aman dilakukan dan jangan menyentuh peralatan listrik saat berada di air.",
+"Pindah ke tempat lebih tinggi dan ikuti informasi evakuasi.",
+"Jangan menerobos arus banjir dengan berjalan kaki, sepeda, atau kendaraan."
+]
+],
+
+[
+"⛰️",
+"Tanah longsor",
+[
+"Jauhi lereng, tebing, sungai, dan area yang menunjukkan retakan atau pergerakan tanah.",
+"Jika ada perintah evakuasi, bergerak segera melalui rute aman.",
+"Jangan mendekati lokasi longsor karena longsor susulan dapat terjadi."
+]
+],
+
+[
+"🔥",
+"Kebakaran bangunan",
+[
+"Segera keluar melalui jalur yang aman. Jika ada asap, merunduk dan lindungi pernapasan sebisa mungkin.",
+"Gunakan tangga, bukan lift. Setelah keluar, jangan kembali mengambil barang.",
+"Jika pakaian terbakar, berhenti, jatuhkan diri, lalu berguling untuk memadamkan api."
+]
+],
+
+[
+"🌪️",
+"Angin kencang / puting beliung",
+[
+"Masuk ke bangunan kokoh dan menjauh dari jendela, kaca, serta benda yang mudah terlempar.",
+"Lindungi kepala dan ikuti peringatan cuaca resmi.",
+"Jangan berteduh di bawah pohon atau struktur yang tidak kokoh."
+]
+],
+
+[
+"⚡",
+"Petir",
+[
+"Masuk ke bangunan atau kendaraan tertutup bila memungkinkan.",
+"Hindari tempat terbuka, air, pohon terpencil, dan benda logam besar.",
+"Tunda kegiatan luar ruangan sampai ancaman petir berlalu."
+]
+],
+
+[
+"🌲",
+"Kebakaran hutan/lahan",
+[
+"Jauhi area kebakaran dan ikuti perintah evakuasi.",
+"Tutup pintu/jendela bila asap masuk dan gunakan perlindungan pernapasan yang sesuai.",
+"Jangan mendekati api untuk mengambil gambar atau mencoba memadamkan kebakaran besar sendiri."
+]
+],
+
+[
+"☀️",
+"Gelombang panas",
+[
+"Kurangi aktivitas berat dan cari tempat sejuk. Minum cukup sesuai kebutuhan tubuh.",
+"Perhatikan anak, lansia, dan orang yang rentan terhadap panas.",
+"Jika muncul gejala berat seperti kebingungan atau pingsan, cari pertolongan medis segera."
+]
+],
+
+[
+"🌊",
+"Gelombang tinggi / badai laut",
+[
+"Jangan berada di pantai atau melaut ketika ada peringatan bahaya.",
+"Ikuti informasi cuaca dan instruksi otoritas pelabuhan/kelautan.",
+"Jangan mengabaikan peringatan hanya karena kondisi laut sementara terlihat tenang."
+]
+],
+
+[
+"💨",
+"Kabut asap",
+[
+"Kurangi paparan udara luar saat kualitas udara buruk dan ikuti anjuran kesehatan setempat.",
+"Tutup sumber masuknya asap dan gunakan penyaring udara bila tersedia.",
+"Cari bantuan medis bila mengalami gangguan pernapasan berat."
+]
+],
+
+[
+"☣️",
+"Kebocoran bahan berbahaya",
+[
+"Jauhi sumber dan ikuti arahan petugas. Jika diperintahkan, evakuasi atau berlindung di tempat sesuai instruksi resmi.",
+"Jangan menyentuh atau mencium bahan yang tidak dikenal.",
+"Hubungi layanan darurat/petugas terkait sesuai wilayah jika aman dilakukan."
+]
+],
+
+[
+"💡",
+"Gangguan listrik besar",
+[
+"Gunakan senter yang aman dan matikan perangkat yang dapat rusak ketika listrik kembali.",
+"Hindari kabel jatuh dan genangan air yang mungkin bertegangan.",
+"Gunakan sumber informasi resmi perusahaan listrik/pemerintah setempat."
+]
+]
+
+];
+
+
+const grid = document.getElementById("grid");
+
+
+function render(list = data){
+
+  grid.innerHTML = list.map((d) => `
+
+    <div
+      class="card disaster"
+      onclick="openGuide(${data.indexOf(d)})"
+    >
+
+      <div class="icon">
+        ${d[0]}
+      </div>
+
+      <b>
+        ${d[1]}
+      </b>
+
+    </div>
+
+  `).join("");
+
+}
+
+
+render();
+
+
+function searchDisaster(){
+
+  const q =
+    document
+      .getElementById("search")
+      .value
+      .toLowerCase();
+
+  render(
+
+    data.filter(d =>
+
+      (
+        d[1] +
+        " " +
+        d[2].join(" ")
+      )
+      .toLowerCase()
+      .includes(q)
+
+    )
+
+  );
+
+}
+
+
+function show(title, body){
+
+  document.getElementById("sheet").innerHTML = `
+
+    <div class="top">
+
+      <h2>
+        ${title}
+      </h2>
+
+      <button
+        class="close"
+        onclick="closeModal()"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    ${body}
+
+  `;
+
+  document
+    .getElementById("modal")
+    .classList.add("show");
+
+}
+
+
+function closeModal(){
+
+  document
+    .getElementById("modal")
+    .classList.remove("show");
+
+}
+
+
+function openGuide(i){
+
+  const d = data[i];
+
+  show(
+    d[0] + " " + d[1],
+
+    `
+
+    <div class="warning">
+
+      <b>Prioritas:</b>
+
+      keselamatan diri terlebih dahulu.
+      Ikuti peringatan dan instruksi petugas
+      setempat jika tersedia.
+
+    </div>
+
+
+    <h3>⚡ Saat kejadian</h3>
+
+    ${
+
+      d[2]
+      .map(
+        (x,n) => `
+
+        <div class="step">
+
+          <b>
+            Langkah ${n+1}
+          </b>
+
+          <br>
+
+          ${x}
+
+        </div>
+
+        `
+      )
+      .join("")
+
+    }
+
+
+    <h3>🧰 Sebelum kejadian</h3>
+
+    <ul>
+
+      <li>
+        Ketahui jalur keluar dan titik kumpul.
+      </li>
+
+      <li>
+        Simpan kontak keluarga dan layanan darurat.
+      </li>
+
+      <li>
+        Siapkan air, makanan tahan lama,
+        senter, baterai/power bank,
+        obat pribadi, dokumen penting,
+        dan kebutuhan khusus.
+      </li>
+
+    </ul>
+
+
+    <h3>✅ Setelah kejadian</h3>
+
+    <ul>
+
+      <li>
+        Periksa keselamatan diri dan orang di sekitar
+        tanpa memasuki bahaya.
+      </li>
+
+      <li>
+        Gunakan informasi resmi untuk mengetahui
+        kondisi dan pembatasan wilayah.
+      </li>
+
+      <li>
+        Jangan kembali ke area bahaya sebelum
+        dinyatakan aman.
+      </li>
+
+    </ul>
+
+
+    <div class="good">
+
+      <b>Ingat:</b>
+
+      kondisi nyata bisa berbeda.
+      Instruksi resmi setempat memiliki prioritas.
+
+    </div>
+
+    `
+  );
+
+}
+
+
+function openEmergency(){
+
+  show(
+
+    "🚨 Mode Darurat",
+
+    `
+
+    <p>
+      <b>Pilih situasi yang sedang terjadi.</b>
+    </p>
+
+    <div class="grid">
+
+      ${
+
+        data
+        .map(
+
+          (d,i) => `
+
+          <button
+            class="card"
+            onclick="openGuide(${i})"
+          >
+
+            ${d[0]}
+            ${d[1]}
+
+          </button>
+
+          `
+
+        )
+        .join("")
+
+      }
+
+    </div>
+
+
+    <div class="warning">
+
+      Jika ada ancaman langsung terhadap nyawa,
+      hubungi layanan darurat setempat jika aman dilakukan.
+
+    </div>
+
+    `
+  );
+
+}
+
+
+function openChecklist(){
+
+  const items = [
+
+    "Air minum",
+    "Makanan tahan lama",
+    "Senter",
+    "Baterai/power bank",
+    "Kotak P3K",
+    "Obat pribadi",
+    "Peluit",
+    "Masker",
+    "Salinan dokumen penting",
+    "Uang tunai secukupnya",
+    "Pakaian cadangan",
+    "Perlengkapan bayi/lansia/disabilitas bila diperlukan"
+
+  ];
+
+
+  show(
+
+    "🎒 Checklist Kit Darurat",
+
+    `
+
+    <p class="muted">
+
+      Centang barang yang sudah tersedia.
+      Status tersimpan di perangkat ini.
+
+    </p>
+
+
+    <div class="check">
+
+      ${
+
+        items
+        .map(
+
+          (x,i) => `
+
+          <label>
+
+            <input
+              type="checkbox"
+              data-k="${i}"
+              onchange="saveCheck(this)"
+            >
+
+            ${x}
+
+          </label>
+
+          `
+
+        )
+        .join("")
+
+      }
+
+    </div>
+
+    `
+
+  );
+
+
+  items.forEach(
+
+    (_,i) => {
+
+      const el =
+        document.querySelector(
+          `[data-k="${i}"]`
+        );
+
+      el.checked =
+        localStorage.getItem("kit"+i) === "1";
+
+    }
+
+  );
+
+}
+
+
+function saveCheck(el){
+
+  localStorage.setItem(
+
+    "kit" + el.dataset.k,
+
+    el.checked ? "1" : "0"
+
+  );
+
+}
+
+
+function familyPlan(){
+
+  show(
+
+    "👨‍👩‍👧 Rencana Keluarga",
+
+    `
+
+    <div class="step">
+
+      <b>1. Tentukan titik kumpul</b>
+
+      <br>
+
+      Pilih lokasi yang relatif aman
+      dan mudah dikenali.
+
+    </div>
+
+
+    <div class="step">
+
+      <b>2. Tentukan kontak</b>
+
+      <br>
+
+      Sepakati satu kontak keluarga
+      yang dapat dihubungi jika anggota
+      keluarga terpisah.
+
+    </div>
+
+
+    <div class="step">
+
+      <b>3. Hafalkan rute alternatif</b>
+
+      <br>
+
+      Jangan bergantung pada satu jalan saja.
+
+    </div>
+
+
+    <div class="step">
+
+      <b>4. Sesuaikan kebutuhan</b>
+
+      <br>
+
+      Rencanakan kebutuhan anak,
+      lansia, penyandang disabilitas,
+      dan hewan peliharaan.
+
+    </div>
+
+    `
+
+  );
+
+}
+
+
+function generalHelp(){
+
+  show(
+
+    "🧭 Prinsip Keselamatan",
+
+    `
+
+    <div class="step">
+
+      <b>1.</b>
+      Kenali ancaman sebelum bertindak.
+
+    </div>
+
+
+    <div class="step">
+
+      <b>2.</b>
+      Jauhkan diri dari sumber bahaya.
+
+    </div>
+
+
+    <div class="step">
+
+      <b>3.</b>
+      Ikuti instruksi petugas dan
+      peringatan resmi.
+
+    </div>
+
+
+    <div class="step">
+
+      <b>4.</b>
+      Jangan menyebarkan informasi
+      yang belum terverifikasi.
+
+    </div>
+
+
+    <div class="step">
+
+      <b>5.</b>
+      Bantu orang lain hanya jika tindakan
+      tersebut tidak membahayakan diri sendiri.
+
+    </div>
+
+    `
+
+  );
+
+}
+
+
+function official(){
+
+  show(
+
+    "📢 Sumber Informasi Resmi",
+
+    `
+
+    <p>
+
+      Untuk kondisi aktual di Indonesia,
+      periksa kanal resmi lembaga yang relevan seperti:
+
+    </p>
+
+
+    <ul>
+
+      <li>
+        BMKG — informasi gempa, tsunami, dan cuaca.
+      </li>
+
+      <li>
+        BNPB/BPBD — informasi penanggulangan
+        dan kondisi kebencanaan.
+      </li>
+
+      <li>
+        PVMBG — informasi aktivitas gunung api
+        dan kebencanaan geologi.
+      </li>
+
+      <li>
+        Pemerintah daerah dan petugas di lokasi.
+      </li>
+
+    </ul>
+
+
+    <div class="warning">
+
+      Aplikasi ini tidak mengklaim menyediakan
+      peringatan real-time.
+
+      Selalu cocokkan kondisi aktual
+      dengan sumber resmi.
+
+    </div>
+
+    `
+
+  );
+
+}
+
+</script>
+
+</body>
+        </html>
